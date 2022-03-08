@@ -125,13 +125,12 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
         return NULL;
     element_t *node = list_entry(head->next, element_t, list);
     list_del(&node->list);
-    int32_t len = min(min(bufsize - 1, strlen(node->value) + 1),
-                      abs_branchless((intptr_t) sp) - 1);
-    size_t i = len;
-    while (len >= 0) {
-        intptr_t mask = (-!!(len ^ i));
-        sp[len] = node->value[len] & mask;
-        len--;
+    if (sp) {
+        size_t str_len = strlen(node->value);
+        size_t max_len = bufsize - 1;
+        size_t cpy_len = str_len > max_len ? max_len : str_len;
+        memcpy(sp, node->value, cpy_len);
+        sp[cpy_len] = 0;
     }
     return node;
 }
@@ -146,13 +145,12 @@ element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
         return NULL;
     element_t *node = list_entry(head->prev, element_t, list);
     list_del(&node->list);
-    int32_t len = min(min(bufsize - 1, strlen(node->value) + 1),
-                      abs_branchless((intptr_t) sp) - 1);
-    size_t i = len;
-    while (len >= 0) {
-        intptr_t mask = (-!!(len ^ i));
-        sp[len] = node->value[len] & mask;
-        len--;
+    if (sp) {
+        size_t str_len = strlen(node->value);
+        size_t max_len = bufsize - 1;
+        size_t cpy_len = str_len > max_len ? max_len : str_len;
+        memcpy(sp, node->value, cpy_len);
+        sp[cpy_len] = 0;
     }
     return node;
 }
